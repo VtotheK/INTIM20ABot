@@ -1,5 +1,7 @@
 *.env
 *.swp
+*.swo
 *.pyc
 __pycache__
 *.swa
+connstr.py

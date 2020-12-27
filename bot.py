@@ -1,6 +1,8 @@
 import os
+import dbconnections as dbcon
 import messageparser
 import discord
+import mysql.connector
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -9,15 +11,33 @@ GUILD = os.getenv('DISCORD_GUILD')
 
 client = discord.Client()
 
+async def increment_leaderboard(message):
+    try:
+        conn = mysql.connector.connect(user=dbcon.user,password=dbcon.password,host=dbcon.host,database=dbcon.db)
+        cur = conn.cursor()
+        params = [message.author.id, message.author.name] 
+        cur.callproc('Leaderboard_Upd',params)
+        conn.commit()
+    except mysql.connector.Error as err:
+        print(f"{err}")
+    finally:
+        print("Leaderboard incremented.")
+        cur.close()
+        conn.close()
+
+
 @client.event
 async def on_ready():
-    print(f"name of the guild is: kurwa")
+    print(f"Bot ready")
 
 @client.event
 async def on_message(message):
     if(message.author == client.user):
         return
     else:
-        await messageparser.parse_message(message)
+        print({message.author.id})
+        await increment_leaderboard(message);
+        #await messageparser.parse_message(message)
 
 client.run(TOKEN)
+
