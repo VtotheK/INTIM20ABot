@@ -2,24 +2,25 @@ import discord
 import os 
 import mysql.connector
 import dbconnections as dbcon
+import random
 
 
 async def parse_message(message):
-    if(message.content == "$bot hello"):
-        response = "Hello there " + str(message.author.name) + "!"
-        await message.channel.send(response)
-        try:
-            conn = mysql.connector.connect(user=dbcon.user,password=dbcon.password,host=dbcon.host,database=dbcon.db)
-            cur = conn.cursor()
-            params = [message.author.id, message.author.name] 
-            cur.callproc('')
-            conn.commit()
-            cur.close()
-        except mysql.connector.Error as err:
-            print(f"{err}")
-        finally:
-            conn.close()
-
-
-
-
+    msg = str(message.content).split(' ')
+    map(str.lower, msg)
+    print("here")
+    if(msg[0] == '$bot'):
+        if(len(msg) == 1):
+            noargresponses = open("botresponses/emptyarg","r").readlines()
+            response = noargresponses[random.randint(0,len(noargresponses)-1)]
+            await message.channel.send(response)
+            return
+        if(message.content == "$bot hello"):
+            response = "Hello there " + str(message.author.name) + "!"
+            return
+        if(message.content == "$bot -h"):
+            emb = discord.Embed(title="Commands",color=0xc73228)
+            emb.add_field(name="Help", value="$bot [-h|--help]", inline=False)
+            emb.add_field(name="Leaderboard", value="$bot [-l|--leaderboard] [-dm||-directmessage]", inline=False)
+            await message.channel.send(embed=emb)
+            return

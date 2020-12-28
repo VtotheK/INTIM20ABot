@@ -3,5 +3,7 @@
 *.swo
 *.pyc
 __pycache__
+botresponses
+botresponses
 *.swa
 connstr.py

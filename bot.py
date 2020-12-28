@@ -21,7 +21,7 @@ async def increment_leaderboard(message):
     except mysql.connector.Error as err:
         print(f"{err}")
     finally:
-        print("Leaderboard incremented.")
+        print(f"{message.author} sent a message, leaderboard incremented for userid {message.author.id}")
         cur.close()
         conn.close()
 
@@ -37,7 +37,7 @@ async def on_message(message):
     else:
         print({message.author.id})
         await increment_leaderboard(message);
-        #await messageparser.parse_message(message)
+        await messageparser.parse_message(message)
 
 client.run(TOKEN)
 
