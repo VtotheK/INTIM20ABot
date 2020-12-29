@@ -13,7 +13,7 @@ client = discord.Client()
 
 async def increment_leaderboard(message):
     try:
-        conn = mysql.connector.connect(user=dbcon.user,password=dbcon.password,host=dbcon.host,database=dbcon.db)
+        conn = mysql.connector.connect(user=dbcon.p_user,password=dbcon.p_password,host=dbcon.p_host,database=dbcon.p_db)
         cur = conn.cursor()
         params = [message.author.id, message.author.name] 
         cur.callproc('Leaderboard_Upd',params)

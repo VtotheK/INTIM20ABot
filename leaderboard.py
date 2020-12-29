@@ -18,7 +18,7 @@ async def call(d_message,msg):
         print(f"User {d_message.author} passed invalid number {msg[len(msg)-1]}.")
         delim = 10 #sanity
     try:
-        conn = mysql.connector.connect(user=dbcon.user,password=dbcon.password,host=dbcon.host,database=dbcon.db)
+        conn = mysql.connector.connect(user=dbcon.p_user,password=dbcon.p_password,host=dbcon.p_host,database=dbcon.p_db)
         cur = conn.cursor()
         personid = None 
         if(personal):
@@ -35,7 +35,7 @@ async def call(d_message,msg):
         for i in range(len(p)):
             name = p[i][0]
             postcount = str(p[i][1])
-            fv = name + "\t" + str(postcount) + " posts" 
+            fv = name + str(postcount) + " posts" 
             reply.add_field(name=place,value=fv,inline=False)
             place += 1
 
