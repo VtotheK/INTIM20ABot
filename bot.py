@@ -19,16 +19,16 @@ async def increment_leaderboard(message):
         cur.callproc('Leaderboard_Upd',params)
         conn.commit()
     except mysql.connector.Error as err:
-        print(f"{err}")
+        print(f'{err}')
     finally:
-        print(f"{message.author} sent a message, leaderboard incremented for userid {message.author.id}")
+        print(f'{message.author} sent a message, leaderboard incremented for userid {message.author.id}')
         cur.close()
         conn.close()
 
 
 @client.event
 async def on_ready():
-    print(f"Bot ready")
+    print(f'Bot ready')
 
 @client.event
 async def on_message(message):
