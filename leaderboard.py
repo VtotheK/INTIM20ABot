@@ -24,7 +24,7 @@ async def call(d_message,msg):
         if(personal):
             personid = d_message.author.id
         params = [personid, delim]
-        cur.callproc('Leaderboard_Get',params)
+        cur.callproc('leaderboard_get',params)
         conn.commit()
         reply = discord.Embed(title="Post leaderboard", color=0xc73228)
         place = 1
@@ -35,7 +35,7 @@ async def call(d_message,msg):
         for i in range(len(p)):
             name = p[i][0]
             postcount = str(p[i][1])
-            fv = name + str(postcount) + " posts" 
+            fv = name + " " + str(postcount) + " posts" 
             reply.add_field(name=place,value=fv,inline=False)
             place += 1
 

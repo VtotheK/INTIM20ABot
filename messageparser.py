@@ -8,7 +8,6 @@ import leaderboard
 async def parse_message(d_message):
     msg = str(d_message.content).split(' ')
     map(str.lower, msg)
-    print('here')
 
     if(msg[0] == '$bot'):
         if(len(msg) == 1):

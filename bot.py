@@ -16,7 +16,7 @@ async def increment_leaderboard(message):
         conn = mysql.connector.connect(user=dbcon.p_user,password=dbcon.p_password,host=dbcon.p_host,database=dbcon.p_db)
         cur = conn.cursor()
         params = [message.author.id, message.author.name] 
-        cur.callproc('Leaderboard_Upd',params)
+        cur.callproc('leaderboard_upd',params)
         conn.commit()
     except mysql.connector.Error as err:
         print(f'{err}')
