@@ -1,8 +1,10 @@
 import iso8601
+from datetime import date, time, datetime,timedelta
 import pytz
 import io
 import uuid
 import glob
+import dbconnections
 
 
 class EventItem:
@@ -50,8 +52,11 @@ for i in range(len(l)):
             elif('DTEND' in l[index]):
                 dtend = getmsg(l[index],':')
                 date_obj = iso8601.parse_date(dtend)
-                event.deadline = date_obj.strftime('%Y-%m-%d %H:%M:%S')
-                
+                baddeadline = date_obj.strftime('%Y-%m-%d %H:%M:%S')
+                deadline = datetime.strptime(baddeadline,'%Y-%m-%d %H:%M:%S')
+                deadline = deadline + timedelta(hours=2)
+                print(deadline)
+                event.deadline=deadline
             index+=1 
         allevents.append(event)
 
@@ -65,10 +70,5 @@ for k in range(len(allevents)):
     print()
     print()
     print()
-s = "20201130T220000Z"
 
 
-_date_obj=iso8601.parse_date(s)
-d = _date_obj.strftime('%Y-%m-%d %H:%M:%S')
-print(_date_obj)
-print(d)

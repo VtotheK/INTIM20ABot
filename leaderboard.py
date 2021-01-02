@@ -18,7 +18,7 @@ async def call(d_message,msg):
         print(f"User {d_message.author} passed invalid number {msg[len(msg)-1]}.")
         delim = 10 #sanity
     try:
-        conn = mysql.connector.connect(user=dbcon.p_user,password=dbcon.p_password,host=dbcon.p_host,database=dbcon.p_db)
+        conn = mysql.connector.connect(user=dbcon.user,password=dbcon.password,host=dbcon.host,database=dbcon.db)
         cur = conn.cursor()
         personid = None 
         if(personal):
