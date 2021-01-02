@@ -1,8 +1,9 @@
-import icalendar as i
 import iso8601
 import pytz
 import io
 import uuid
+import glob
+
 
 class EventItem:
     def __init__(self,ident=None,summary=None,description=None,deadline=None,notifydays=7):
@@ -17,18 +18,8 @@ def getmsg(msg,delim):
     ret = msg[index+1:].replace('\n','').replace('\t','').replace('\\','')
     return ret 
 
-'''
-_date_utc=_date_obj.astimezone(pytz.utc)
-_date_utc_zformat=_date_utc.strftime('%Y-%m-%dT%H:%M:%SZ')
-g = io.open('deadline_in/icalexport.ics',mode='r',encoding='utf-8')
-gcal = i.Calendar.from_ical(g.read())
-for component in gcal.walk():
-    if
-    print(component.get('description'))
-    print(component.get('summary'))
-    print(component.get('name'))
-g.close()
-'''
+if(glob.glob('deadline_in/*.ics')):
+        print('FUCKYUEA')
 
 f = io.open('deadline_in/icalexport.ics',mode='r',encoding='utf-8')
 l = f.readlines()
@@ -42,13 +33,18 @@ for i in range(len(l)):
             event.ident = uuid.uuid4().hex
         while('END:VEVENT' not in l[index]):
             if('SUMMARY' in l[index]):
-                event.summary = getmsg(l[index],':')
+                sumrun = index
+                sm = ""
+                while('DESCRIPTION' not in l[sumrun]):
+                    sm += l[sumrun].replace('\\n','')
+                    sumrun+=1
+                event.summary = getmsg(sm,':')
             elif('DESCRIPTION' in l[index]):
-                run = index
+                descrun = index
                 desc = "" 
-                while('CLASS:PUBLIC' not in l[run]):
-                    desc += l[run].replace('\\n','')
-                    run+=1
+                while('CLASS:PUBLIC' not in l[descrun]):
+                    desc += l[descrun].replace('\\n','')
+                    descrun+=1
                 d = getmsg(desc,':') 
                 event.description = d
             elif('DTEND' in l[index]):
@@ -76,4 +72,3 @@ _date_obj=iso8601.parse_date(s)
 d = _date_obj.strftime('%Y-%m-%d %H:%M:%S')
 print(_date_obj)
 print(d)
-
