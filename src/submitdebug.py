@@ -5,7 +5,7 @@ def submit(severityid,issuerid,callingproc,message):
     try:
         debugconn = mysql.connector.connect(user=dbcon.user,password=dbcon.password,host=dbcon.host,database=dbcon.logdb)
         debugcur = conn.cursor()
-        params = [Severity.CRITICALERROR.value,ISSUER.Python.value,callingproc,message]
+        params = [severityid,issuerid,callingproc,message]
         debugcur.callproc('debuginsert',params)
         debugconn.commit()
         debugconn.close()
