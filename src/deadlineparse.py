@@ -3,13 +3,17 @@
 import iso8601
 from datetime import date, time, datetime,timedelta
 import pytz
+import os 
 import io
 import uuid
 import glob
 import mysql.connector
+import submitdebug
+from debuglevels import Severity,Issuer
 from db.connections import dbconnections as dbcon
 from eventitem import EventItem
 
+allevents = []
 
 def getmsg(msg,delim):
     index = msg.find(delim)
@@ -17,31 +21,27 @@ def getmsg(msg,delim):
     return ret 
 
 def updatedeadlines(events):
+    callingproc = os.path.basename(__file__)
     try: 
         conn = mysql.connector.connect(user=dbcon.user,password=dbcon.password,host=dbcon.host,database=dbcon.db)
         cur = conn.cursor()
         for e in events:
-            print(e.summary)
-        for e in events:
             notifyfrom = e.deadline - timedelta(days=e.notifydays)
-            print(f'n:{notifyfrom}')
-            print(f'd:{deadline}')
             params = [0,e.module,e.course,e.title,e.summary,e.userid,e.deadline,notifyfrom]
             cur.callproc('deadlines_set',params)
             conn.commit()
+        debugmsg = "Succesfully added new deadlines."
+        submitdebug.submit(Severity.INFORMATION.value,ISSUER.Python.Value,callingproc,debugmsg)
     except mysql.connector.Error as error:
-        print(error)
-        #conn = mysql.connector.connect(user=dbcon.user,password=dbcon.password,host=dbcon.host,database=dbcon.logdb)
-        #cur = conn.cursor()
-        #TODO logging
+        debugmsg = 'Failed to add deadlines to db'
+        submitdebug.submit(Severity.CRITICALERROR.value,ISSUER.Python.Value,callingproc,debugmsg)
     finally:
         cur.close()
         conn.close()
 
-for filename in glob.glob('/home/vtothek/test_intim20a_bot/src/deadline_in/*.ics'):
+for filename in glob.glob('deadline_in/*.ics'):
     f = io.open(filename,mode='r',encoding='utf-8')
     l = f.readlines()
-    allevents = []
     guid = 0
     for i in range(len(l)):
         if('BEGIN:VEVENT' in l[i]):
