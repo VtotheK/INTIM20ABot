@@ -52,6 +52,7 @@ async def call(d_message,msg):
         lu.submitilog(lu.Severity.ERROR.value,lu.Issuer.Python.Value,proc,logentry)
      
     finally:
-        cur.close()
-        conn.close()
+        if(conn.is_connected()):
+            cur.close()
+            conn.close()
 

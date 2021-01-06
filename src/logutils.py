@@ -28,3 +28,7 @@ def submitlog(severityid,issuerid,callingproc,message):
     except mysql.connector.Error as error:
         print('Something went very wrong here')
         print(error) 
+    finally:
+        if(debugconn.is_connected()):
+            debugconn.close()
+            debugcur.close()

@@ -34,8 +34,9 @@ def updatedeadlines(events):
         logmsg = 'Failed to add deadlines to db'
         lu.submitlog(lu.Severity.CRITICALERROR.value,lu.Issuer.Python.value,callingproc,debugmsg)
     finally:
-        cur.close()
-        conn.close()
+        if(conn.is_connected()):
+            cur.close()
+            conn.close()
 
 def parsefile():
     allevents = []
