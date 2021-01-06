@@ -1,10 +1,11 @@
 import discord
 import os 
 import mysql.connector
-from db.connections import dbconnections as dbcon
-
+import loguntils as lu
+from db.connections import dbconnections as dbcon 
 
 async def call(d_message,msg):
+    proc = os.path.basename(__file__)
     dm = False
     personal = False
     delim = 10
@@ -43,10 +44,13 @@ async def call(d_message,msg):
             await d_message.author.send(embed=reply)
         else:
             await d_message.channel.send(embed=reply)
-
+            logentry= f'Succesfully replied to {d_message.author.id}. PARAMS dm:{dm}, personal:{personal} msg{msg}'
+            lu.submitilog(lu.Severity.INFORMATION.value,lu.Issuer.Python.Value,proc,logentry)
     except mysql.connector.Error as error:
         print(f'Query error:{err}')
-
+        logentry= f'Error in replying to {d_message.author.id}. PARAMS dm:{dm}, personal:{personal} msg{msg}'
+        lu.submitilog(lu.Severity.ERROR.value,lu.Issuer.Python.Value,proc,logentry)
+     
     finally:
         cur.close()
         conn.close()

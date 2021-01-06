@@ -8,12 +8,10 @@ import io
 import uuid
 import glob
 import mysql.connector
-import submitdebug
-from debuglevels import Severity,Issuer
+import logutils as lu
 from db.connections import dbconnections as dbcon
 from eventitem import EventItem
 
-allevents = []
 
 def getmsg(msg,delim):
     index = msg.find(delim)
@@ -31,16 +29,18 @@ def updatedeadlines(events):
             cur.callproc('deadlines_set',params)
             conn.commit()
         debugmsg = "Succesfully added new deadlines."
-        submitdebug.submit(Severity.INFORMATION.value,ISSUER.Python.Value,callingproc,debugmsg)
+        lu.submitlog(lu.Severity.INFORMATION.value,lu.Issuer.Python.value,callingproc,debugmsg)
     except mysql.connector.Error as error:
-        debugmsg = 'Failed to add deadlines to db'
-        submitdebug.submit(Severity.CRITICALERROR.value,ISSUER.Python.Value,callingproc,debugmsg)
+        logmsg = 'Failed to add deadlines to db'
+        lu.submitlog(lu.Severity.CRITICALERROR.value,lu.Issuer.Python.value,callingproc,debugmsg)
     finally:
         cur.close()
         conn.close()
 
-for filename in glob.glob('deadline_in/*.ics'):
-    f = io.open(filename,mode='r',encoding='utf-8')
+def parsefile():
+    allevents = []
+    for filename in glob.glob('deadline_in/*.ics'):
+        f = io.open(filename,mode='r',encoding='utf-8')
     l = f.readlines()
     guid = 0
     for i in range(len(l)):
@@ -72,4 +72,12 @@ for filename in glob.glob('deadline_in/*.ics'):
                     event.deadline=deadline
                 index+=1 
             allevents.append(event)
-updatedeadlines(allevents)
+    return allevents  
+
+
+
+if(__name__=='__main__'):
+    events = parsefile()
+    print(len(events))
+    if(len(events) > 0):
+        updatedeadlines(events)
