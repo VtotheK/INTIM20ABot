@@ -1,7 +1,7 @@
 import discord
 import os 
 import mysql.connector
-import loguntils as lu
+import logutils as lu
 from db.connections import dbconnections as dbcon 
 
 async def call(d_message,msg):
@@ -13,11 +13,15 @@ async def call(d_message,msg):
         dm = True
     if('-p' in msg):
         personal = True
-    try:
-        delim = int(msg[len(msg) - 1])
-    except ValueError as ve:
-        print(f"User {d_message.author} passed invalid number {msg[len(msg)-1]}.")
-        delim = 10 #sanity
+    if('-c' in msg):
+        index = msg.index('-c') + 1
+        try:
+            delim = int(msg[index])
+        except (ValueError,IndexError) as err:
+            print(f"User {d_message.author} passed invalid number {msg[len(msg)-1]}.")
+            delim = 10 #sanity
+            logentry= f'Invalid leaderboard count delimiter sent by user {d_message.author.id}. PARAMS dm:{dm}, personal:{personal} msg{msg}'
+            lu.submitlog(lu.Severity.NOTIFICATION.value,lu.Issuer.Python.value,proc,logentry)
     try:
         conn = mysql.connector.connect(user=dbcon.user,password=dbcon.password,host=dbcon.host,database=dbcon.db)
         cur = conn.cursor()
@@ -45,11 +49,11 @@ async def call(d_message,msg):
         else:
             await d_message.channel.send(embed=reply)
             logentry= f'Succesfully replied to {d_message.author.id}. PARAMS dm:{dm}, personal:{personal} msg{msg}'
-            lu.submitilog(lu.Severity.INFORMATION.value,lu.Issuer.Python.Value,proc,logentry)
+            lu.submitlog(lu.Severity.INFORMATION.value,lu.Issuer.Python.value,proc,logentry)
     except mysql.connector.Error as error:
         print(f'Query error:{err}')
         logentry= f'Error in replying to {d_message.author.id}. PARAMS dm:{dm}, personal:{personal} msg{msg}'
-        lu.submitilog(lu.Severity.ERROR.value,lu.Issuer.Python.Value,proc,logentry)
+        lu.submitilog(lu.Severity.ERROR.value,lu.Issuer.Python.value,proc,logentry)
      
     finally:
         if(conn.is_connected()):

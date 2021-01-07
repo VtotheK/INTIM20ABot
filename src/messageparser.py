@@ -1,9 +1,10 @@
 import discord
 import os 
 import mysql.connector
-import dbconnections as dbcon
+from db.connections import dbconnections as dbcon
 import random
 import leaderboard
+import deadlinehandler
 
 async def parse_message(d_message):
     msg = str(d_message.content).split(' ')
@@ -27,4 +28,6 @@ async def parse_message(d_message):
             return
         if(msg[1] == '-l'):
             await leaderboard.call(d_message,msg)
+        if(msg[1] == '-dl'):
+            await deadlinehandler.parsemessage(d_msg,msg)
 

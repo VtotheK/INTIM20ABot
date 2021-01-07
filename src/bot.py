@@ -1,5 +1,5 @@
 import os
-import dbconnections as dbcon
+from db.connections import dbconnections as dbcon
 import messageparser
 import discord
 import logutils as lu
