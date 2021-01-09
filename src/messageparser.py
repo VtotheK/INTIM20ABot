@@ -18,6 +18,7 @@ async def parse_message(d_message):
             return
         if(d_message.content == '$bot hello'):
             response = 'Hello there ' + str(d_message.author.name) + '!'
+            await d_message.channel.send(response)
             return
         if(msg[1] == '-h'):
             emb = discord.Embed(title='Commands',color=0xc73228)
@@ -28,6 +29,10 @@ async def parse_message(d_message):
             return
         if(msg[1] == '-l'):
             await leaderboard.call(d_message,msg)
+            return
         if(msg[1] == '-dl'):
-            await deadlinehandler.parsemessage(d_msg,msg)
+            await deadlinehandler.parsemessage(d_message,msg)
+            return
+        else:
+            await d_message.channel.send("I dont know what you want, type -h for available commands")
 

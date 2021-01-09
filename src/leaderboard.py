@@ -36,13 +36,16 @@ async def call(d_message,msg):
 
         for result in cur.stored_results():
             p = result.fetchall()
-
         for i in range(len(p)):
             name = p[i][0]
             postcount = str(p[i][1])
             fv = name + " " + str(postcount) + " posts" 
-            reply.add_field(name=place,value=fv,inline=False)
+            if(not personal):
+                reply.add_field(name=place,value=fv,inline=False)
+            else:
+                reply.add_field(name="Your postcount",value=fv,inline=False)
             place += 1
+
 
         if(dm):
             await d_message.author.send(embed=reply)
