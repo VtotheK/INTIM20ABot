@@ -1,10 +1,10 @@
 import discord
 import os 
 import mysql.connector
-from db.connections import dbconnections as dbcon
 import random
 import leaderboard
-import deadlinehandler
+from db.connections import dbconnections as dbcon
+from deadlineutils import deadlinehandler
 
 async def parse_message(d_message):
     msg = str(d_message.content).split(' ')
