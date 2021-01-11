@@ -43,7 +43,7 @@ def updatedeadlines(events):
             conn.close()
     return success
 
-def parsefile():
+def getevents():
     allevents = []
     for filename in glob.glob('deadline_in/*.ics'):
         files.append(filename)
@@ -85,11 +85,9 @@ def moveicsfiles(folder):
     path = 'deadline_in/' + folder
     for i in range(len(files)):
         shutil.move(files[i],path)
-    
-
 
 if(__name__=='__main__'):
-    events = parsefile()
+    events = getevents()
     print(len(events))
     if(len(events) > 0):
         if(updatedeadlines(events)):

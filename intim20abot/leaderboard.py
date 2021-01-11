@@ -4,7 +4,7 @@ import mysql.connector
 import logutils as lu
 from db.connections import dbconnections as dbcon 
 
-async def call(d_message,msg):
+async def sendleaderboard(d_message,msg):
     proc = os.path.basename(__file__)
     dm = False
     personal = False
@@ -45,7 +45,6 @@ async def call(d_message,msg):
             else:
                 reply.add_field(name="Your postcount",value=fv,inline=False)
             place += 1
-
 
         if(dm):
             await d_message.author.send(embed=reply)

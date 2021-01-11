@@ -10,9 +10,7 @@ def gettoken(msg,tkn):
         index = msg.index(tkn,0) + 1
         try:
             val = int(msg[index])
-            if(tkn == '-l' and (val > 10 or val < 1)):
-                raise ValueError
-            return str(val),True
+            return val,True
         except ValueError:
             debugmsg = f"{d.now()}: {tkn} flag was defined but no correct value was supplied by {d_msg.author.id}."
             print(debugmsg)
@@ -23,27 +21,41 @@ def gettoken(msg,tkn):
 
 
 async def parsemessage(d_msg,msg):
-    callingproc = os.path.basename(__file__)
+    personal = False
+    dm = False
+    userid = None
+    proc = os.path.basename(__file__)
     deadlineid,d_tkn = gettoken(msg,'-id')
     if(not d_tkn):
         return
-    rowlimit,r_tkn = gettoken(msg,'-r')
+    rowlimit,r_tkn = gettoken(msg,'-c')
     if(not r_tkn):
         return
-    userid = None
     if('-p' in msg):
+        personal = True
         userid = d_msg.author.id
+    if('-dm' in msg):
+        dm = True
     try:
-        limit = 10
         conn = mysql.connector.connect(user=dbcon.user,password=dbcon.password,host=dbcon.host,database=dbcon.db)
         cur = conn.cursor()
-        params = [deadlineid,userid,limit]
+        params = [deadlineid,userid,rowlimit]
         cur.callproc('deadlines_get',params)
         conn.commit()
+        msg = ""
         for result in cur.stored_results():
             p = result.fetchall()
         for i in range(len(p)):
-            msg = f"```Deadline id:{p[i][0]}\nSummary: {p[i][4]}\nDeadline: {p[i][6]}\n```"
+            msg += f"**Deadline Id**:{p[i][0]}\n**Deadline**: {p[i][6]}\n**Summary**: {p[i][4]}\n-------------------------------------\n"
+        if(not dm):
             await d_msg.channel.send(msg)
+        else:
+            await d_msg.author.send(msg)
+        print(f'Succesfully delivered deadlines to user {d_msg.author.id}')
+        debugmsg = f'Succesfully sent deadlines to user {d_msg.author.id}, params: dm={dm} personal={personal}'
+        lu.submitlog(lu.Severity.INFORMATION.value,lu.Issuer.Python.value,proc,debugmsg)
     except mysql.connector.Error as error: 
         print("{error}")
+        debugmsg = f'Failed to send deadlines to user [d_msg.author.id], params: dm={dm} personal={personal}, msg={str(msg), SQL-error:{error}}'
+        lu.submitlog(lu.Severity.CRITICALERROR.value,lu.Issuer.Python.value,proc,debugmsg)
+    

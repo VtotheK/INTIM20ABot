@@ -1,10 +1,11 @@
 import discord
+import helper
 import os 
 import mysql.connector
 import random
 import leaderboard
+import deadlinehandler
 from db.connections import dbconnections as dbcon
-from deadlineutils import deadlinehandler
 
 async def parse_message(d_message):
     msg = str(d_message.content).split(' ')
@@ -21,14 +22,12 @@ async def parse_message(d_message):
             await d_message.channel.send(response)
             return
         if(msg[1] == '-h'):
-            emb = discord.Embed(title='Commands',color=0xc73228)
-            emb.add_field(name='Help', value='$bot [-h]', inline=False)
-            emb.add_field(name='Leaderboard', value='$bot [-l] [-dm] [-p] <1-10>', inline=False)
-            print(f'{d_message.author.id}')
+            if(len(msg) == 2):
+                emb = helper.gethelpembed(command=None)
             await d_message.channel.send(embed=emb)
             return
         if(msg[1] == '-l'):
-            await leaderboard.call(d_message,msg)
+            await leaderboard.sendleaderboard(d_message,msg)
             return
         if(msg[1] == '-dl'):
             await deadlinehandler.parsemessage(d_message,msg)
