@@ -26,10 +26,10 @@ async def parsemessage(d_msg,msg):
     userid = None
     proc = os.path.basename(__file__)
     deadlineid,d_tkn = gettoken(msg,'-id')
-    if(not d_tkn):
-        return
     rowlimit,r_tkn = gettoken(msg,'-c')
-    if(not r_tkn):
+    limitdates,l_tkn = gettoken(msg,'-ld')
+    if(not d_tkn or not r_tkn or not l_tkn):
+        await d_msg.channel.send("Invalid input, type -h -dl to check the correct syntax.")
         return
     if('-p' in msg):
         personal = True
@@ -58,4 +58,4 @@ async def parsemessage(d_msg,msg):
         print("{error}")
         debugmsg = f'Failed to send deadlines to user [d_msg.author.id], params: dm={dm} personal={personal}, msg={str(msg), SQL-error:{error}}'
         lu.submitlog(lu.Severity.CRITICALERROR.value,lu.Issuer.Python.value,proc,debugmsg)
-    
+

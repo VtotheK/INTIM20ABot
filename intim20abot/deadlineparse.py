@@ -58,7 +58,7 @@ def getevents():
                     if('SUMMARY' in line[index]):
                         sumrun = index
                         sm = ""
-                        while('DESCRIPTION' not in line[sumrun]):
+                        while('DESCRIPTION:' not in line[sumrun]):
                             sm += line[sumrun].replace('\\n','')
                             sumrun+=1
                         event.summary = getmsg(sm,':')
@@ -70,7 +70,7 @@ def getevents():
                             descrun+=1
                         d = getmsg(desc,':') 
                         event.description = d
-                    elif('DTEND' in line[index]):
+                    elif('DTEND:' in line[index]):
                         dtend = getmsg(line[index],':')
                         date_obj = iso8601.parse_date(dtend)
                         baddeadline = date_obj.strftime('%Y-%m-%d %H:%M:%S')
