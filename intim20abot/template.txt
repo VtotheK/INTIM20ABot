@@ -1,1 +1,1 @@
-testtemplate
+:testtemplate
