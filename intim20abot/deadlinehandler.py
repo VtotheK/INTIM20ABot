@@ -39,7 +39,7 @@ async def parsemessage(d_msg,msg):
     try:
         conn = mysql.connector.connect(user=dbcon.user,password=dbcon.password,host=dbcon.host,database=dbcon.db)
         cur = conn.cursor()
-        params = [deadlineid,userid,rowlimit]
+        params = [deadlineid,userid,rowlimit,limitdates]
         cur.callproc('deadlines_get',params)
         conn.commit()
         msg = ""

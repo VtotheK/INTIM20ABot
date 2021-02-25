@@ -23,21 +23,20 @@ async def parse_message(d_message):
             return
         if(msg[1] == '-h'):
             cmd = None
-            if(len(msg) >= 2):
-                pass
+            if(len(msg) > 2):
+                cmd = msg[2]
             emb = helper.gethelpembed(command=cmd)
             if('-dm' in msg):
                 await d_message.author.send(embed=emb)
             else:
                 await d_message.channel.send(embed=emb)
-        if(msg[1] == '-l'):
+        elif(msg[1] == '-l'):
             await leaderboard.sendleaderboard(d_message,msg)
             return
-        if(msg[1] == '-dl'):
+        elif(msg[1] == '-dl'):
             await deadlinehandler.parsemessage(d_message,msg)
             return
         #if(msg[1] == '-t'):
         #    await d_message.channel.send(file=discord.File(r'template.txt'))
         else:
             await d_message.channel.send("I dont know what you want, type -h for available commands")
-
