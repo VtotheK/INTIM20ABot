@@ -36,7 +36,7 @@ async def parse_message(d_message):
         elif(msg[1] == '-dl'):
             await deadlinehandler.parsemessage(d_message,msg)
             return
-        #if(msg[1] == '-t'):
-        #    await d_message.channel.send(file=discord.File(r'template.txt'))
+        if(msg[1] == '-t'):
+            await d_message.channel.send(file=discord.File(r'template.json'))
         else:
             await d_message.channel.send("I dont know what you want, type -h for available commands")

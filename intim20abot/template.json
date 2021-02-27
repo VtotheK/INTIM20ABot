@@ -1,0 +1,10 @@
+{
+    "deadline":{
+	"course":"School course",
+	"title":"Deadline title",
+	"description":"Deadline description",
+	"deadlinedatetime":"2021-09-20 23:59:59",
+	"notifybeforedays":7,
+	"personal":true
+    }
+}
