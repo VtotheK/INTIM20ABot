@@ -21,6 +21,12 @@ def gettoken(msg,tkn):
 
 
 async def parsemessage(d_msg,msg):
+    if('-add' in msg):
+        await deadlines_add(d_msg,msg)
+    else:
+        await deadlines_get(d_msg,msg)
+
+async def deadlines_get(d_msg,msg):
     personal = False
     dm = False
     userid = None
@@ -43,19 +49,30 @@ async def parsemessage(d_msg,msg):
         cur.callproc('deadlines_get',params)
         conn.commit()
         msg = ""
+        print(len([temp for temp in cur.stored_results()]))
+        p = []
         for result in cur.stored_results():
             p = result.fetchall()
-        for i in range(len(p)):
-            msg += f"**Deadline Id**:{p[i][0]}\n**Deadline**: {p[i][6]}\n**Summary**: {p[i][4]}\n-------------------------------------\n"
+        if(len(p) > 0):
+            for i in range(len(p)):
+                msg += f"**Deadline Id**:{p[i][0]}\n**Deadline**: {p[i][6]}\n**Summary**: {p[i][4]}\n-------------------------------------\n"
+        else:
+            msg = "No incoming deadlines"
         if(not dm):
             await d_msg.channel.send(msg)
         else:
             await d_msg.author.send(msg)
+    
         print(f'Succesfully delivered deadlines to user {d_msg.author.id}')
         debugmsg = f'Succesfully sent deadlines to user {d_msg.author.id}, params: dm={dm} personal={personal}'
         lu.submitlog(lu.Severity.INFORMATION.value,lu.Issuer.Python.value,proc,debugmsg)
     except mysql.connector.Error as error: 
-        print("{error}")
+        print("f{error}")
         debugmsg = f'Failed to send deadlines to user [d_msg.author.id], params: dm={dm} personal={personal}, msg={str(msg), SQL-error:{error}}'
         lu.submitlog(lu.Severity.CRITICALERROR.value,lu.Issuer.Python.value,proc,debugmsg)
+
+async def deadlines_add(d_msg,msg):
+    pass
+    
+
 

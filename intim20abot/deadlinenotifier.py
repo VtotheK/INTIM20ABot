@@ -2,7 +2,8 @@ import os
 import discord
 from discord.utils import get
 from dotenv import load_dotenv
-from ... import dbconnections as dbcon
+from db.connections import dbconnections as dbcon
+
 
 load_dotenv()
 

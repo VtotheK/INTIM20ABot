@@ -28,7 +28,7 @@ def updatedeadlines(events):
         cur = conn.cursor()
         for e in events:
             notifyfrom = e.deadline - timedelta(days=e.notifydays)
-            params = [0,e.module,e.course,e.title,e.summary,e.userid,e.deadline,notifyfrom]
+            params = [0,e.course,e.title,e.summary,e.userid,e.deadline,notifyfrom]
             cur.callproc('deadlines_set',params)
             conn.commit()
         debugmsg = "Succesfully added new deadlines."

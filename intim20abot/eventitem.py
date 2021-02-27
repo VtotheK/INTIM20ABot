@@ -4,7 +4,6 @@ class EventItem:
         self.description = description 
         self.deadline = deadline
         self.notifydays= notifydays 
-        self.module = module
         self.course=course
         self.title=title
         self.userid = userid

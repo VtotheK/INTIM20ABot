@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import os
 from db.connections import dbconnections as dbcon
 import messageparser
