@@ -1,4 +1,8 @@
+import uuid
+import io
 import logutils as lu
+import json
+import uuid
 from db.connections import dbconnections as dbcon
 import discord
 import mysql.connector
@@ -66,6 +70,7 @@ async def deadlines_get(d_msg,msg):
         print(f'Succesfully delivered deadlines to user {d_msg.author.id}')
         debugmsg = f'Succesfully sent deadlines to user {d_msg.author.id}, params: dm={dm} personal={personal}'
         lu.submitlog(lu.Severity.INFORMATION.value,lu.Issuer.Python.value,proc,debugmsg)
+
     except mysql.connector.Error as error: 
         print("f{error}")
         debugmsg = f'Failed to send deadlines to user [d_msg.author.id], params: dm={dm} personal={personal}, msg={str(msg), SQL-error:{error}}'
@@ -73,6 +78,31 @@ async def deadlines_get(d_msg,msg):
 
 async def deadlines_add(d_msg,msg):
     pass
-    
 
 
+async def sendtemplate(d_message):
+    res = []
+    guid = str(uuid.uuid4().hex)
+    conn = mysql.connector.connect(user=dbcon.user,password=dbcon.password,host=dbcon.host,database=dbcon.db)
+    cur = conn.cursor()
+    query = f"SELECT hexhash FROM dl_templatemap WHERE hexhash = '{guid}'"
+    cur.execute(query)
+    res = cur.fetchall()
+    template = createtemplate(guid)
+    with open(template, 'rb') as outfile:
+        json.dumps(template,outfile)
+        d_message.channel.send(file=discord.file(outfile))
+
+def createtemplate(guid):
+    data = {}
+    data['deadline'] = []
+    data['deadline'].append({
+	"course":"School course",
+	"title":"Deadline title",
+	"description":"Deadline description",
+	"deadlinedatetime":"2021-09-20 23:59:59",
+	"notifybeforedays":7,
+	"personal":'true'
+        })
+    derp = json.dumps(data, ensure_ascii=False)
+    return derp

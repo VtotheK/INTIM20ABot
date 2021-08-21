@@ -34,9 +34,10 @@ async def parse_message(d_message):
             await leaderboard.sendleaderboard(d_message,msg)
             return
         elif(msg[1] == '-dl'):
-            await deadlinehandler.parsemessage(d_message,msg)
-            return
-        if(msg[1] == '-t'):
-            await d_message.channel.send(file=discord.File(r'template.json'))
+            if(msg[2] == '-t'):
+                await deadlinehandler.sendtemplate(d_message)
+            else:
+                await deadlinehandler.parsemessage(d_message,msg)
+                return
         else:
             await d_message.channel.send("I dont know what you want, type -h for available commands")
